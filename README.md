@@ -36,12 +36,6 @@ source ~/.bashrc
 ```bash
 terraform --version
 ```
-8. To install Ansible using pip, run the following commands:
-```bash
-sudo amazon-linux-extras install epel -y
-sudo yum install -y python3-pip
-sudo pip3 install ansible
-```
 9. The above commands will install the required packages and then install Ansible using pip.
 10. Once installed, you can verify the Ansible installation by running:
 ```bash
@@ -114,7 +108,7 @@ terraform apply
 terraform destroy
 ```
 
-## Lab-02: EC2 Aws Instance
+## Lab-03: EC2 Aws Instance
 
 **Estimated time to complete:** 15 minutes
 
@@ -137,65 +131,133 @@ provider "aws" {
 resource "aws_instance" "control_instance" {
   ami           = var.ami_id
   instance_type = "t2.micro"
-  key_name      = "mentoria_keypair"  # Replace with your key pair name
+  key_name      = "mentoria_keypair"
 
   tags = {
     Name = "control-ec2-mdc"
   }
 
   vpc_security_group_ids = [
-    aws_security_group.allow_ssh.id,
-    aws_security_group.allow_http.id
+    aws_security_group.allow_ssh_control.id,
+    aws_security_group.allow_http_control.id
   ]
 }
 
 resource "aws_instance" "worker_instance" {
   ami           = var.ami_id
   instance_type = "t2.micro"
-  key_name      = "mentoria_keypair"  # Replace with your key pair name
+  key_name      = "mentoria_keypair"
 
   tags = {
     Name = "worker-ec2-mdc"
   }
 
   vpc_security_group_ids = [
-    aws_security_group.allow_ssh.id,
-    aws_security_group.allow_http.id
+    aws_security_group.allow_ssh_worker.id,
+    aws_security_group.allow_http_worker.id
   ]
 }
 
-resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssh"
-  description = "Allow inbound SSH traffic"
+resource "aws_security_group" "allow_ssh_control" {
+  name        = "allow_ssh_control"
+  description = "Allow inbound SSH traffic for control instance"
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
-resource "aws_security_group" "allow_http" {
-  name        = "allow_http"
-  description = "Allow inbound HTTP traffic"
+resource "aws_security_group" "allow_http_control" {
+  name        = "allow_http_control"
+  description = "Allow inbound HTTP traffic for control instance"
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port = 80
-    to_port   = 80
-    protocol  = "tcp"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "allow_ssh_worker" {
+  name        = "allow_ssh_worker"
+  description = "Allow inbound SSH traffic for worker instance"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "allow_http_worker" {
+  name        = "allow_http_worker"
+  description = "Allow inbound HTTP traffic for worker instance"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+```
+7. Crete the var.tf file:
+```pl
+variable "region" {
+  default = "us-east-1"
+}
+
+variable "ami_id" {
+  default = "ami-0e731c8a588258d0d"
+}
+
+variable "vpc_id" {
+  default = "vpc-f1639e8c"
 }
 ```
-7. Open/Create the "outputs.tf"
-
+8. Open/Create the "outputs.tf"
 ```bash
 vi output.tf
 ```
-8. Add the desired outputs, such as the instance's public IP.
+9. Add the desired outputs, such as the instance's public IP.
 ```pl
 output "control_instance_public_ip" {
   value = aws_instance.control_instance.public_ip
@@ -205,15 +267,94 @@ output "worker_instance_public_ip" {
   value = aws_instance.worker_instance.public_ip
 }
 ```
-9. Initialize the Terraform project directory to download the required plugins:
+10. Initialize the Terraform project directory to download the required plugins:
 ```bash
 terraform init
 ```
-10. Preview the execution plan to see the changes that will be applied to the infrastructure:
+11. Preview the execution plan to see the changes that will be applied to the infrastructure:
 ```bash
 terraform plan
 ```
-11. Apply the changes and create the resource group:
+12. Apply the changes and create the resource group:
 ```bash
 terraform apply
 ```
+12. AWS Console:
+- Go to the AWS Management Console.
+- Navigate to the "EC2" service.
+13. EC2 Dashboard:
+- In the EC2 Dashboard, click on "Instances" in the left navigation pane.
+14. Locate Worker Instance:
+- Find your worker EC2 instance in the list of instances.
+15. Retrieve Public DNS:
+- Click on the row corresponding to your worker instance to select it.
+- At the bottom of the page, you should see details about your instance. Look for the "Public DNS (IPv4)" field. Copy this value.
+```bash
+ec2-3-91-150-100.compute-1.amazonaws.com # Exemple WOKER an
+```
+16. SSH Connection:
+- Open a terminal on your local machine.
+- Use the following SSH copy control EC2 instance. 
+```bash
+# Copy the key pair to the worker EC2 instance
+scp -i "/home/cloudshell-user/02-mdc-terraform/mentoria_keypair.pem" "/home/cloudshell-user/02-mdc-terraform/mentoria_keypair.pem" ec2-user@ec2-3-93-187-118.compute-1.amazonaws.com:~
+```
+
+
+## Lab-04: Configuring and Running Ansible on the Control Instance (CONTROL EC2):
+
+1. Connect to the Control Instance:
+```bash
+# SSH into the worker EC2 instance
+ssh -i "/home/cloudshell-user/02-mdc-terraform/mentoria_keypair.pem" ec2-user@ec2-3-91-150-100.compute-1.amazonaws.com
+```
+2. Install Ansible:
+- Install Ansible on your CONTROL EC2 to enable remote management of other instances. Run the following commands:
+```bash
+sudo yum install -y python3-pip
+sudo pip3 install ansible
+```
+3. Copy Worker Machine's IP:
+- Save the Worker EC2 instance's IP address into an Ansible inventory file. This file is crucial for Ansible to know which machines to manage. Run this command:
+```bash
+echo -e "mdc-target1 ansible_host=54.91.3.16 ansible_user=ec2-user ansible_ssh_private_key_file=/home/ec2-user/mentoria_keypair.pem" > inventory.txt
+```
+4. Test Connection to Worker Machine:
+- Ensure Ansible can communicate with the Worker EC2 instance:
+```bash
+ansible mdc-target1 -i inventory.txt -m ping
+```
+5. Create the YAML Playbook (playbook.yaml):
+- Craft an Ansible playbook to install Nginx, start its service, and create a simple webpage:
+```yaml
+- hosts: mdc-target1
+  become: yes
+  tasks:
+    - name: Instalar o Nginx
+      yum:
+        name: nginx
+        state: present
+
+    - name: Iniciar o serviço Nginx
+      service:
+        name: nginx
+        state: started
+
+    - name: Habilitar o serviço Nginx para iniciar na inicialização
+      service:
+        name: nginx
+        enabled: yes
+
+    - name: Criar arquivo index.html
+      copy:
+        content: "Bem Vindos a mentoria devops cloud"
+        dest: /usr/share/nginx/html/index.html
+```
+6. Run the Playbook:
+- Execute the playbook to apply the configurations on the Worker EC2:
+```bash
+ansible-playbook -i inventory.txt playbook.yaml
+```
+7. Verify the Application on Port 80:
+- Open your web browser and enter your Worker EC2 instance's IP address followed by ":80" (e.g., http://YOUR_IP:80). This should display the welcome message.
+- Make sure your Worker EC2 instance is reachable on port 80 and adjust the playbook as needed for your specific application requirements.
