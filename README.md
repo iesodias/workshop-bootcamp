@@ -45,9 +45,7 @@ ansible --version
 ```bash
 aws ec2 create-key-pair --key-name mentoria_keypair --query 'KeyMaterial' --output text > mentoria_keypair.pem
 ```
-
-
-### Create the folder structure for the project
+12. Create the folder structure for the project
 
 ```bash
 mkdir mdc-terraform
