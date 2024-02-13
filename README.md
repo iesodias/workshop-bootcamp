@@ -1,8 +1,8 @@
-# workshop-bootcamp
+# Workshop Bootcamp - DevopsFest 2024
 
 ## Lab-01: Setup Environment
 
-**Estimated time to complete:** 15 minutes
+**Estimated time to complete:** 20 minutes
 
 - CloudShell
 - Terraform
@@ -55,7 +55,7 @@ mkdir mdc-terraform
 
 ## Lab-02: Storage Account Basic
 
-**Estimated time to complete:** 15 minutes
+**Estimated time to complete:** 20 minutes
 
 **Work directory:** 01-mdc-terraform
 
@@ -110,7 +110,7 @@ terraform destroy
 
 ## Lab-03: EC2 Aws Instance
 
-**Estimated time to complete:** 15 minutes
+**Estimated time to complete:** 40 minutes
 
 **Work directory:** 02-mdc-terraform
 
@@ -300,8 +300,11 @@ ec2-3-91-150-100.compute-1.amazonaws.com # Exemple WOKER an
 scp -i "/home/cloudshell-user/02-mdc-terraform/mentoria_keypair.pem" "/home/cloudshell-user/02-mdc-terraform/mentoria_keypair.pem" ec2-user@ec2-3-93-187-118.compute-1.amazonaws.com:~
 ```
 
-
 ## Lab-04: Configuring and Running Ansible on the Control Instance (CONTROL EC2):
+
+**Estimated time to complete:** 30 minutes
+
+**Work directory:** 02-mdc-terraform
 
 1. Connect to the Control Instance:
 ```bash
