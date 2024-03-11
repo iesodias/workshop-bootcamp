@@ -1,5 +1,29 @@
 # Workshop Bootcamp - DevopsFest 2024
 
+## Lab-00: Aws Configure
+
+1. Access the AWS Console:
+2. Go to the AWS Console and log in to your account.
+3. Navigate to the Security Credentials Page:
+- In the upper-right corner, click on your account name or the "Services" dropdown and select "My Security Credentials."
+- Access User Security Credentials:
+- On the left navigation bar, click on "Users."
+- Select the user for which you want to create credentials.
+- Go to the "Security credentials" tab.
+4. Create or View Access Credentials:
+5. Under "Access keys," you can create a new key or view an existing one.
+6. If creating a new one, click on "Create access key."
+7. Take Note of the Access Credentials:
+- After creation or viewing, take note of the "Access key ID" and "Secret access key." These details are needed to configure the AWS CLI.
+8. Open Terminal or Command Prompt:
+9. Open the terminal on your operating system.
+10. Run the aws configure Command:
+- Execute the following command and input the information when prompted:
+```bash
+aws configure
+```
+You will be prompted to enter the access key, secret access key, default region, and output format.
+
 ## Lab-01: Setup Environment
 
 **Estimated time to complete:** 20 minutes
