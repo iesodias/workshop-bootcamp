@@ -300,7 +300,7 @@ ec2-3-91-150-100.compute-1.amazonaws.com # Exemple WOKER an
 - Use the following SSH copy control EC2 instance. 
 ```bash
 # Copy the key pair to the worker EC2 instance
-scp -i "/Users/iesodias/Documents/Projetos/workshop-bootcamp/mdc-terraform/kp_devops_fest.pem" "/Users/iesodias/Documents/Projetos/workshop-bootcamp/mdc-terraform/kp_devops_fest.pem" ec2-54-211-206-27.compute-1.amazonaws.com:~
+scp -i "/Users/iesodias/Documents/Projetos/workshop-bootcamp/mdc-terraform/kp_devops_fest.pem" "/Users/iesodias/Documents/Projetos/workshop-bootcamp/mdc-terraform/kp_devops_fest.pem" ec2-user@ec2-54-211-206-27.compute-1.amazonaws.com:~
 ```
 
 ## Lab-04: Configuring and Running Ansible on the Control Instance (CONTROL EC2):
@@ -312,7 +312,7 @@ scp -i "/Users/iesodias/Documents/Projetos/workshop-bootcamp/mdc-terraform/kp_de
 1. Connect to the Control Instance:
 ```bash
 # SSH into the worker EC2 instance
-ssh -i "/home/cloudshell-user/02-mdc-terraform/kp_devops_fest.pem" ec2-user@ec2-3-91-150-100.compute-1.amazonaws.com
+ssh -i "/Users/iesodias/Documents/Projetos/workshop-bootcamp/mdc-terraform/kp_devops_fest.pem" ec2-user@ec2-54-211-206-27.compute-1.amazonaws.com
 ```
 2. Install Ansible:
 - Install Ansible on your CONTROL EC2 to enable remote management of other instances. Run the following commands:
@@ -323,7 +323,7 @@ sudo pip3 install ansible
 3. Copy Worker Machine's IP:
 - Save the Worker EC2 instance's IP address into an Ansible inventory file. This file is crucial for Ansible to know which machines to manage. Run this command:
 ```bash
-echo -e "mdc-target1 ansible_host=54.91.3.16 ansible_user=ec2-user ansible_ssh_private_key_file=/home/ec2-user/kp_devops_fest.pem" > inventory.txt
+echo -e "mdc-target1 ansible_host=34.227.16.33 ansible_user=ec2-user ansible_ssh_private_key_file=/home/ec2-user/kp_devops_fest.pem" > inventory.txt
 ```
 4. Test Connection to Worker Machine:
 - Ensure Ansible can communicate with the Worker EC2 instance:
