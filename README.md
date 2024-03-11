@@ -37,13 +37,18 @@ source ~/.bashrc
 terraform --version
 ```
 9. The above commands will install the required packages and then install Ansible using pip.
+10. To install Ansible using pip, run the following commands:
+```bash
+sudo yum install -y python3-pip
+sudo pip3 install ansible
+```
 10. Once installed, you can verify the Ansible installation by running:
 ```bash
 ansible --version
 ```
-11. Run the following AWS CLI command to create a new key pair and save the private key to a local file named mentoria_keypair.pem:
+11. Run the following AWS CLI command to create a new key pair and save the private key to a local file named kp_devops_fest.pem:
 ```bash
-aws ec2 create-key-pair --key-name mentoria_keypair --query 'KeyMaterial' --output text > mentoria_keypair.pem
+aws ec2 create-key-pair --key-name kp_devops_fest --query 'KeyMaterial' --output text > kp_devops_fest.pem
 ```
 12. Create the folder structure for the project
 
@@ -61,7 +66,7 @@ mkdir mdc-terraform
 ```bash
 mkdir 01-mdc-terraform
 cd 01-mdc-terraform
-touch main.tf
+vi main.tf
 ```
 2. Create a file named "main.tf" inside the "01-mdc-terraform" folder.
 3. In the "main.tf" file, add the following code to configure the Microsoft Azure provider and create a S3:
@@ -129,7 +134,7 @@ provider "aws" {
 resource "aws_instance" "control_instance" {
   ami           = var.ami_id
   instance_type = "t2.micro"
-  key_name      = "mentoria_keypair"
+  key_name      = "kp_devops_fest"
 
   tags = {
     Name = "control-ec2-mdc"
@@ -144,7 +149,7 @@ resource "aws_instance" "control_instance" {
 resource "aws_instance" "worker_instance" {
   ami           = var.ami_id
   instance_type = "t2.micro"
-  key_name      = "mentoria_keypair"
+  key_name      = "kp_devops_fest"
 
   tags = {
     Name = "worker-ec2-mdc"
@@ -295,7 +300,7 @@ ec2-3-91-150-100.compute-1.amazonaws.com # Exemple WOKER an
 - Use the following SSH copy control EC2 instance. 
 ```bash
 # Copy the key pair to the worker EC2 instance
-scp -i "/home/cloudshell-user/02-mdc-terraform/mentoria_keypair.pem" "/home/cloudshell-user/02-mdc-terraform/mentoria_keypair.pem" ec2-user@ec2-3-93-187-118.compute-1.amazonaws.com:~
+scp -i "/Users/iesodias/Documents/Projetos/workshop-bootcamp/mdc-terraform/kp_devops_fest.pem" "/Users/iesodias/Documents/Projetos/workshop-bootcamp/mdc-terraform/kp_devops_fest.pem" ec2-54-211-206-27.compute-1.amazonaws.com:~
 ```
 
 ## Lab-04: Configuring and Running Ansible on the Control Instance (CONTROL EC2):
@@ -307,7 +312,7 @@ scp -i "/home/cloudshell-user/02-mdc-terraform/mentoria_keypair.pem" "/home/clou
 1. Connect to the Control Instance:
 ```bash
 # SSH into the worker EC2 instance
-ssh -i "/home/cloudshell-user/02-mdc-terraform/mentoria_keypair.pem" ec2-user@ec2-3-91-150-100.compute-1.amazonaws.com
+ssh -i "/home/cloudshell-user/02-mdc-terraform/kp_devops_fest.pem" ec2-user@ec2-3-91-150-100.compute-1.amazonaws.com
 ```
 2. Install Ansible:
 - Install Ansible on your CONTROL EC2 to enable remote management of other instances. Run the following commands:
@@ -318,7 +323,7 @@ sudo pip3 install ansible
 3. Copy Worker Machine's IP:
 - Save the Worker EC2 instance's IP address into an Ansible inventory file. This file is crucial for Ansible to know which machines to manage. Run this command:
 ```bash
-echo -e "mdc-target1 ansible_host=54.91.3.16 ansible_user=ec2-user ansible_ssh_private_key_file=/home/ec2-user/mentoria_keypair.pem" > inventory.txt
+echo -e "mdc-target1 ansible_host=54.91.3.16 ansible_user=ec2-user ansible_ssh_private_key_file=/home/ec2-user/kp_devops_fest.pem" > inventory.txt
 ```
 4. Test Connection to Worker Machine:
 - Ensure Ansible can communicate with the Worker EC2 instance:
