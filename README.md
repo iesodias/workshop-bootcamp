@@ -49,6 +49,8 @@ ansible --version
 11. Run the following AWS CLI command to create a new key pair and save the private key to a local file named kp_devops_fest.pem:
 ```bash
 aws ec2 create-key-pair --key-name kp_devops_fest --query 'KeyMaterial' --output text > kp_devops_fest.pem
+
+chmod 400 kp_devops_fest.pem
 ```
 12. Create the folder structure for the project
 
