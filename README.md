@@ -39,7 +39,7 @@ terraform --version
 9. The above commands will install the required packages and then install Ansible using pip.
 10. To install Ansible using pip, run the following commands:
 ```bash
-sudo yum install -y python3-pip
+sudo apt-get install -y python3-pip
 sudo pip3 install ansible
 ```
 10. Once installed, you can verify the Ansible installation by running:
